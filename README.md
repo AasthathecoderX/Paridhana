@@ -74,10 +74,10 @@ Automatically suggests similar items from online retailers — with filters for 
 #### Setup
 
 1. **Clone** 
-```bash
+    ```bash
     git clone https://github.com/AasthathecoderX/Paridhana
     cd Paridhana
-```
+    ```
 
 2. **Optional** Create and activate a virtual environment:
 
@@ -112,22 +112,22 @@ Automatically suggests similar items from online retailers — with filters for 
 
 2. Activate the virtual environment (if you created one):
 
-```bash
-# Windows
-venv\Scripts\activate
+    ```bash
+    # Windows
+    venv\Scripts\activate
 
-# macOS / Linux
-source venv/bin/activate
-```
+    # macOS / Linux
+    source venv/bin/activate
+    ```
 3. Install all the requirements:
-```bash
-pip install -r requirements.txt
-```
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 3. Start the Streamlit app:
-```bash
-streamlit run app.py
-```
+    ```bash
+    streamlit run app.py
+    ```
 
 4. After a few seconds you’ll see a message like:
 
@@ -140,3 +140,5 @@ streamlit run app.py
 
 
 ## 📬 Output Screenshots
+<img width="1881" height="733" alt="image" src="https://github.com/user-attachments/assets/ddcb54e6-8eb3-4325-884c-3b5a3efdfca6" />
+
