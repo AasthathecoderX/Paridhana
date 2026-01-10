@@ -140,3 +140,5 @@ Automatically suggests similar items from online retailers — with filters for 
 
 
 ## 📬 Output Screenshots
+<img width="1881" height="733" alt="image" src="https://github.com/user-attachments/assets/ddcb54e6-8eb3-4325-884c-3b5a3efdfca6" />
+
