@@ -12,7 +12,8 @@ from PIL import Image  # noqa: F401
 
 import google.generativeai as genai
 
-from google.genai import types
+from google.generativeai import types
+
 
 # ================== ENV & CLIENTS ==================
 
