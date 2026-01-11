@@ -11,9 +11,7 @@ from dotenv import load_dotenv
 from PIL import Image  # noqa: F401
 
 import google.generativeai as genai
-
 from google.generativeai import types
-
 
 # ================== ENV & CLIENTS ==================
 
@@ -24,7 +22,7 @@ if not GEMINI_API_KEY:
     st.error("Missing GEMINI_API_KEY environment variable.")
     st.stop()
 
-gemini_client = genai.Client(api_key=GEMINI_API_KEY)
+genai.configure(api_key=GEMINI_API_KEY)
 
 # ================== STREAMLIT CONFIG ==================
 
@@ -267,10 +265,10 @@ def generate_design_text(user_text: str) -> str:
     """
 
     try:
-        resp = gemini_client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt,
-            config=types.GenerateContentConfig(temperature=0.7),
+        model = genai.GenerativeModel("gemini-2.5-flash")
+        resp = model.generate_content(
+            prompt,
+            generation_config=types.GenerateContentConfig(temperature=0.7),
         )
         return resp.text or ""
     except Exception as e:
@@ -294,10 +292,10 @@ def extract_outfit_tags_from_image(image_bytes: bytes) -> dict:
         - Each value should be a short string, except "keywords" which is a comma-separated string.
         """
 
-        resp = gemini_client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=[prompt, image_part],
-            config=types.GenerateContentConfig(temperature=0.3),
+        model = genai.GenerativeModel("gemini-2.5-flash")
+        resp = model.generate_content(
+            [prompt, image_part],
+            generation_config=types.GenerateContentConfig(temperature=0.3),
         )
 
         text = (resp.text or "").strip()
@@ -317,7 +315,7 @@ def search_products_with_gemini(
     outfit_text: str,
     search_text: str,
     budget: int,
-    sites: list[str],
+    sites: list,
     image_tags: dict | None = None,
 ) -> list[dict]:
     if not outfit_text.strip() and not image_tags:
@@ -357,10 +355,10 @@ def search_products_with_gemini(
     """
 
     try:
-        resp = gemini_client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt,
-            config=types.GenerateContentConfig(temperature=0.3),
+        model = genai.GenerativeModel("gemini-2.5-flash")
+        resp = model.generate_content(
+            prompt,
+            generation_config=types.GenerateContentConfig(temperature=0.3),
         )
 
         response_text = (resp.text or "").strip()
@@ -380,7 +378,7 @@ def search_products_with_gemini(
                 if price_val <= budget:
                     site = (p.get("site") or "").lower()
                     title = p.get("title", "")
-                    query = requests.utils.quote(title)
+                    query = quote(title)
 
                     if "amazon" in site:
                         url = f"https://www.amazon.in/s?k={query}"
@@ -431,13 +429,15 @@ def generate_dummy_products(outfit_text: str, budget: int, sites: list) -> list[
     for p in dummy_products:
         site = p["site"].lower()
         title = p["title"]
-        query = requests.utils.quote(title)
+        query = quote(title)
 
         if "amazon" in site:
             p["url"] = f"https://www.amazon.in/s?k={query}"
         elif "myntra" in site:
             p["url"] = f"https://www.myntra.com/{query}?rawQuery={query}"
         elif "ajio" in site:
+            
+
             p["url"] = f"https://www.ajio.com/search/?text={query}"
         else:
             p["url"] = f"https://www.flipkart.com/search?q={query}"
