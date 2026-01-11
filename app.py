@@ -459,13 +459,17 @@ def generate_design_image(prompt: str) -> bytes | None:
         "High-quality fashion illustration, full body, front view, clean studio background. "
         + prompt
     )
-
     try:
         url = f"https://image.pollinations.ai/prompt/{quote(full_prompt)}"
         response = requests.get(url, timeout=30)
-
         if response.status_code == 200:
-            return response.content
+            # Validate that we got actual image data
+            content = response.content
+            if len(content) > 100 and b'\xFF\xD8\xFF' in content[:10]:  # JPEG header check
+                return content
+            else:
+                st.warning("Image generation returned invalid data. Please try again.")
+                return None
         else:
             st.error(f"Image generation failed: {response.status_code}")
             return None
