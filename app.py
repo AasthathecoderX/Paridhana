@@ -453,7 +453,6 @@ def generate_dummy_products(outfit_text: str, budget: int, sites: list) -> list[
 
 
 # ================== POLLINATIONS.AI IMAGE GENERATION ==================
-
 def generate_design_image(prompt: str) -> bytes | None:
     full_prompt = (
         "High-quality fashion illustration, full body, front view, clean studio background. "
@@ -462,21 +461,30 @@ def generate_design_image(prompt: str) -> bytes | None:
     try:
         url = f"https://image.pollinations.ai/prompt/{quote(full_prompt)}"
         response = requests.get(url, timeout=30)
+        
+        # Check for successful response and valid image data
         if response.status_code == 200:
-            # Validate that we got actual image data
             content = response.content
-            if len(content) > 100 and b'\xFF\xD8\xFF' in content[:10]:  # JPEG header check
-                return content
-            else:
-                st.warning("Image generation returned invalid data. Please try again.")
-                return None
-        else:
-            st.error(f"Image generation failed: {response.status_code}")
+            
+            # Validate that content is not empty and looks like an image
+            # Check for JPEG header (FF D8 FF) or PNG header (89 50 4E 47)
+            if len(content) > 100:
+                if content[:2] == b'\xff\xd8' or content[:4] == b'\x89PNG':
+                    return content
+            
+            # If we got here, the response doesn't look like a valid image
+            st.warning("Image generation service returned invalid data. Please try again.")
             return None
+        else:
+            st.error(f"Image generation failed: HTTP {response.status_code}")
+            return None
+            
+    except requests.Timeout:
+        st.error("Image generation timed out. Please try again.")
+        return None
     except Exception as e:
         st.error(f"Image generation error: {str(e)}")
         return None
-
 
 # ================== UI LAYOUT ==================
 
