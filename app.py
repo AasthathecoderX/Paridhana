@@ -10,7 +10,8 @@ import streamlit as st
 from dotenv import load_dotenv
 from PIL import Image  # noqa: F401
 
-from google import genai
+import google.generativeai as genai
+
 from google.genai import types
 
 # ================== ENV & CLIENTS ==================
